@@ -1,6 +1,7 @@
 name: Release
 
 on:
+  workflow_dispatch:
   push:
     tags:
       - 'v*.*.*'
@@ -8,22 +9,47 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
+      # Step 1: Checkout code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
 
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: yarn
 
+      # Step 4: Build the project
       - name: Build project
         run: yarn build
+        
+      - name: Debug Token Permissions
+        run: |
+          echo "Checking token permissions"
+          curl -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+               -H "Accept: application/vnd.github.v3+json" \
+               https://api.github.com/repos/${{ github.repository }}
 
+      - name: Prepare package.json
+        run: |
+          cp package.json ./dist/
+      # Step 5: Prepare package.json
+      # - name: Prepare package.json
+      #   run: cp package.json ./dist/
+
+      # Step 6: Create a tar.gz archive of the dist folder
+      - name: Create a tar.gz archive
+        run: tar -czvf vue-calendar-${{ github.ref_name }}.tar.gz -C dist .
+
+      # Step 7: Create GitHub Release and upload the tar.gz asset
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -34,13 +60,13 @@ jobs:
           release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-
+  
       - name: Upload Bundled Files
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist
-          asset_name: vue-calendar.zip
-          asset_content_type: application/zip
+          asset_path: ./vue-calendar-${{ github.ref_name }}.tar.gz
+          asset_name: vue-calendar-${{ github.ref_name }}.tar.gz
+          asset_content_type: application/gzip
