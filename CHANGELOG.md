@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/Hossein-Mirazimi/vue-calendar/compare/v0.7.5...v0.8.0) (2024-12-02)
+
+
+### Bug Fixes
+
+* **ci:** upload release assets ([3602925](https://github.com/Hossein-Mirazimi/vue-calendar/commit/3602925))
+
+
+### Features
+
+* **ci:** add github action to create release ([ac4c91d](https://github.com/Hossein-Mirazimi/vue-calendar/commit/ac4c91d))
+
+
+
 <a name="0.7.5"></a>
 ## [0.7.5](https://github.com/alibaba-aero/vue-calendar/compare/v0.7.4...v0.7.5) (2024-10-27)
 
